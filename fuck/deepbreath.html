@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            deep breath
+        </title>
+        <style>
+            #board{
+                position: absolute;
+                border: 0px transparent solid;
+                height: 100vh;
+                width: 100vw;
+                top: 0px;
+                left: 0px;
+            }
+            #start{
+                position: absolute;
+                border: 1px aquamarine solid;
+                border-radius: 50%;
+                height: 30vh;
+                width: 30vw;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                box-shadow: 0px 0px 100px 50px aquamarine;
+                transition: all 500ms ease-out;
+            }
+            #start span{
+                position: absolute;
+                font-size: xx-large;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            #start:hover{
+                box-shadow: 0px 0px 100px 50px slateblue;
+            }
+            #target{
+                position: absolute;
+                border: 50px teal solid;
+                border-radius: 50%;
+                height: 200px;
+                width: 200px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            #describe{
+                position: absolute;
+                font-size: xx-large;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            #back{
+                position: fixed;
+                border: 1px rebeccapurple solid;
+                background-color: skyblue;
+                height: 50px;
+                width: 150px;
+                bottom: 10px;
+                right: 10px;
+                border-radius: 15px;
+                transition: all 200ms ease-in;
+            }
+            #back:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            #back span{
+                position: absolute;
+                font-size: larger;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+        </style>
+    </head>
+    <body bgcolor="antiquewhite">
+        <div id='board'>
+            <div id='start' onclick='javascript:start()'>
+                <span>
+                    start
+                </span>
+            </div>
+        </div>
+        <div id='back' onclick='javascript:back()'>
+            <span>
+                回上頁
+            </span>
+        </div>
+        <script>
+            let time=0;
+            function end(){
+                document.getElementById('describe').innerText='恭喜你完成訓練';
+            }
+            function cycle(){
+                let con=true;
+                if(time>=4){
+                    con=false;
+                }
+                time++;
+                let size=200;
+                document.getElementById('describe').innerText='吸氣';
+                let inhale=window.setInterval(()=>{
+                    document.getElementById('target').style.height=size.toString()+'px';
+                    document.getElementById('target').style.width=size.toString()+'px';
+                    size+=1;
+                    if(size>=500){
+                        document.getElementById('describe').innerText='憋氣';
+                        window.setTimeout(()=>{
+                            document.getElementById('describe').innerText='吐氣';
+                            let exhale=window.setInterval(()=>{
+                                document.getElementById('target').style.height=size.toString()+'px';
+                                document.getElementById('target').style.width=size.toString()+'px';
+                                size-=1;
+                                if(size<=200){
+                                    window.clearInterval(exhale);
+                                    document.getElementById('describe').innerText='';
+                                }
+                            },12);
+                        },2000);
+                        window.clearInterval(inhale);
+                    }
+                },10);
+                if(con){
+                    setTimeout(cycle,9600);
+                }
+                else{
+                    setTimeout(end,9600);
+                }
+            }
+            function start(){
+                document.getElementById('board').innerHTML='<div id="target"><span id="describe"></span></div>';
+                window.setTimeout(cycle,500);
+            }
+            function back(){
+                location.href='lobby.html';
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>棍子吸附</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    canvas {
+      display: block;
+    }
+    #tool{
+    position: fixed;
+    border: 1px red solid;
+    background-color: transparent;
+    color: azure;
+}
+#back{
+    position: fixed;
+    border: 1px rebeccapurple solid;
+    background-color: skyblue;
+    height: 50px;
+    width: 150px;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 15px;
+    transition: all 200ms ease-in;
+}
+#back:hover{
+    background-color: aqua;
+    color: red;
+    box-shadow:inset 10px 10px 10px black;
+}
+#back span{
+    position: absolute;
+    font-size: larger;
+    font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+  </style>
+</head>
+<body>
+    <div id="tool">
+    使用輔助工具ChatGPT編輯
+</div>
+<div id='back' onclick='javascript:back()'><span>回上頁</span></div>
+<canvas id="canvas"></canvas>
+<script>
+  const canvas = document.getElementById('canvas')
+  const ctx = canvas.getContext('2d')
+  let w = canvas.width = window.innerWidth
+  let h = canvas.height = window.innerHeight
+  let mouse = { x: w / 2, y: h / 2 }
+
+  class Stick {
+    constructor() {
+      this.length = 40 + Math.random() * 60
+      this.head = {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5
+      }
+      this.color = `hsl(${Math.random() * 360}, 100%, 70%)`
+    }
+    update() {
+      let dx = mouse.x - this.head.x
+      let dy = mouse.y - this.head.y
+      let dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist < 120) {
+        this.head.vx += dx * 0.01
+        this.head.vy += dy * 0.01
+      }
+      this.head.x += this.head.vx
+      this.head.y += this.head.vy
+      let speed = Math.sqrt(this.head.vx * this.head.vx + this.head.vy * this.head.vy)
+      let maxSpeed = 2.5
+      if (speed > maxSpeed) {
+        this.head.vx = (this.head.vx / speed) * maxSpeed
+        this.head.vy = (this.head.vy / speed) * maxSpeed
+      }
+      if (this.head.x < -this.length) this.head.x = w + this.length
+      if (this.head.x > w + this.length) this.head.x = -this.length
+      if (this.head.y < -this.length) this.head.y = h + this.length
+      if (this.head.y > h + this.length) this.head.y = -this.length
+    }
+    draw() {
+      let angle = Math.atan2(this.head.vy, this.head.vx)
+      let tailX = this.head.x - Math.cos(angle) * this.length
+      let tailY = this.head.y - Math.sin(angle) * this.length
+      ctx.strokeStyle = this.color
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(tailX, tailY)
+      ctx.lineTo(this.head.x, this.head.y)
+      ctx.stroke()
+    }
+  }
+
+  let sticks = []
+  for (let i = 0; i < 150; i++) {
+    sticks.push(new Stick())
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h)
+    for (let s of sticks) {
+      s.update()
+      s.draw()
+    }
+    requestAnimationFrame(animate)
+  }
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX
+    mouse.y = e.clientY
+  })
+
+  window.addEventListener('resize', () => {
+    w = canvas.width = window.innerWidth
+    h = canvas.height = window.innerHeight
+  })
+
+  animate()
+  function back(){
+  location.href='relieve.html';
+}
+</script>
+</body>
+</html>

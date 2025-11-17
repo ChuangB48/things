@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            glass
+        </title>
+        <style>
+            body{
+                overflow: hidden;
+                user-select:none;
+                -webkit-user-select:none;
+                -moz-user-select:none;
+            }
+            #board{
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                height: 200px;
+                width: 200px;
+            }
+            #glass{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                height: 0px;
+                width: 0px;
+                transform: translate(-50%,-50%);
+                opacity: 0;
+            }
+            #back{
+                position: fixed;
+                border: 1px rebeccapurple solid;
+                background-color: skyblue;
+                height: 50px;
+                width: 150px;
+                bottom: 10px;
+                right: 10px;
+                border-radius: 15px;
+                transition: all 200ms ease-in;
+            }
+            #back:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            #back span{
+                position: absolute;
+                font-size: larger;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+        </style>
+    </head>
+    <body bgcolor='antiquewhite'>
+        <div id='board'>
+            <img src='glass.png' id='glass'>
+        </div>
+        <div id='back' onclick='javascript:back()'>
+            <span>
+                回上頁
+            </span>
+        </div>
+        <script>
+            const sound=new Audio('glass.mp3');
+            window.addEventListener('click',mouse=>{
+                sound.play();
+                let mousey=mouse.clientX-100;
+                let mousex=mouse.clientY-100;
+                document.getElementById('board').style.top=mousex.toString()+'px';
+                document.getElementById('board').style.left=mousey.toString()+'px';
+                document.getElementById('glass').style.opacity='1';
+                let o=1.0,s=5.0;
+                let time=window.setInterval(()=>{
+                    document.getElementById('glass').style.opacity=o.toString();
+                    document.getElementById('glass').style.width=s.toString()+'px';
+                    document.getElementById('glass').style.height=s.toString()+'px';
+                    o-=0.01;
+                    s+=20;
+                    if(o<=0){
+                        document.getElementById('glass').style.opacity='0';
+                        document.getElementById('glass').style.width='0px';
+                        document.getElementById('glass').style.height='0px';
+                        window.clearInterval(time);
+                    }
+                },1);
+            });
+            function back(){
+                location.href='relieve.html';
+            }
+        </script>
+    </body>
+</html>

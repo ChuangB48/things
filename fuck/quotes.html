@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            quotes
+        </title>
+        <style>
+            #board{
+                position: absolute;
+                border: 1px pink solid;
+                background-color: transparent;
+                height: 90vh;
+                width: 90vw;
+                top: 5vh;
+                left: 5vw;
+            }
+            .qlists{
+                position: relative;
+                border: 1px pink solid;
+                background-color: transparent;
+                height: auto;
+                max-width: 80vh;
+            }
+        </style>
+    </head>
+    <body bgcolor='antiquewhite'>
+        <div id='board'>
+
+        </div>
+        <script>
+            for(let a=0;a<quotes.length;a++){
+                document.getElementById('board').innerHTML+='<div class="qlists">'+quotes[a]+'</div>';
+            }
+        </script>
+    </body>
+</html>

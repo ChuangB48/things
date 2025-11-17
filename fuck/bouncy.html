@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>彈力球</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #222;
+}
+canvas {
+    display: block;
+}
+#tool {
+    position: fixed;
+    border: 1px red solid;
+    background-color: transparent;
+    color: azure;
+}
+#back {
+    position: fixed;
+    border: 1px rebeccapurple solid;
+    background-color: skyblue;
+    height: 50px;
+    width: 150px;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 15px;
+    transition: all 200ms ease-in;
+}
+#back:hover {
+    background-color: aqua;
+    color: red;
+    box-shadow: inset 10px 10px 10px black;
+}
+#back span {
+    position: absolute;
+    font-size: larger;
+    font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
+</head>
+<body>
+<div id="tool">
+    使用輔助工具ChatGPT編輯
+</div>
+<canvas id="c"></canvas>
+<div id='back' onclick='javascript:back()'><span>回上頁</span></div>
+<script>
+let sound = new Audio('bounce.mp3');
+let c = document.getElementById('c'), ctx = c.getContext('2d'),
+    W, H, points = [], num = 32, baseRadius = 100,
+    viscosity = 0.9, mouse = {x:0, y:0, isDown:false},
+    centerX, centerY, vx = 2, vy = 3,
+    dragging = false, prevMouse = {x:0, y:0};
+
+function init() {
+    resize();
+    centerX = W / 2;
+    centerY = H / 2;
+    for (let i = 0; i < num; i++) {
+        let angle = 2 * Math.PI * i / num;
+        points.push({angle: angle, rad: baseRadius, tarRad: baseRadius, v: 0});
+    }
+    animate();
+}
+
+function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    c.width = W;
+    c.height = H;
+}
+window.addEventListener('resize', resize);
+
+c.addEventListener('mousedown', e => {
+    mouse.isDown = true;
+    let mx = e.clientX, my = e.clientY;
+    mouse.x = mx; mouse.y = my;
+    let dx = mx - centerX, dy = my - centerY;
+    if (Math.hypot(dx, dy) < baseRadius) {
+        dragging = true;
+        prevMouse.x = mx; prevMouse.y = my;
+    }
+});
+c.addEventListener('mouseup', e => {
+    mouse.isDown = false;
+    dragging = false;
+});
+c.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    if (dragging) {
+        let dx = e.clientX - prevMouse.x;
+        let dy = e.clientY - prevMouse.y;
+        vx = dx; vy = dy;
+        centerX = e.clientX;
+        centerY = e.clientY;
+        prevMouse.x = e.clientX;
+        prevMouse.y = e.clientY;
+    }
+});
+c.addEventListener('touchstart', e => {
+    let t = e.touches[0];
+    mouse.isDown = true;
+    mouse.x = t.clientX; mouse.y = t.clientY;
+    let dx = t.clientX - centerX, dy = t.clientY - centerY;
+    if (Math.hypot(dx, dy) < baseRadius) {
+        dragging = true;
+        prevMouse.x = t.clientX; prevMouse.y = t.clientY;
+    }
+});
+c.addEventListener('touchmove', e => {
+    let t = e.touches[0];
+    mouse.x = t.clientX; mouse.y = t.clientY;
+    if (dragging) {
+        let dx = t.clientX - prevMouse.x;
+        let dy = t.clientY - prevMouse.y;
+        vx = dx; vy = dy;
+        centerX = t.clientX;
+        centerY = t.clientY;
+        prevMouse.x = t.clientX;
+        prevMouse.y = t.clientY;
+    }
+});
+c.addEventListener('touchend', e => {
+    mouse.isDown = false;
+    dragging = false;
+});
+
+function animate() {
+    ctx.clearRect(0, 0, W, H);
+    if (!dragging) {
+        centerX += vx;
+        centerY += vy;
+
+        if (centerX + baseRadius > W) {
+            centerX = W - baseRadius;
+            vx *= -1;
+            sound.play();
+        }
+        if (centerX - baseRadius < 0) {
+            centerX = baseRadius;
+            vx *= -1;
+            sound.play();
+        }
+        if (centerY + baseRadius > H) {
+            centerY = H - baseRadius;
+            vy *= -1;
+            sound.play();
+        }
+        if (centerY - baseRadius < 0) {
+            centerY = baseRadius;
+            vy *= -1;
+            sound.play();
+        }
+
+        // 摩擦力
+        vx *= 0.98;
+        vy *= 0.98;
+        if (Math.abs(vx) < 0.01) vx = 0;
+        if (Math.abs(vy) < 0.01) vy = 0;
+    }
+
+    for (let p of points) {
+        let px = centerX + Math.cos(p.angle) * p.rad;
+        let py = centerY + Math.sin(p.angle) * p.rad;
+        let dx = px - mouse.x, dy = py - mouse.y;
+        let dist = Math.hypot(dx, dy);
+        if (mouse.isDown && dist < baseRadius) {
+            p.tarRad = baseRadius + (dist - baseRadius) * 0.5;
+        } else {
+            p.tarRad = baseRadius;
+        }
+        p.v += (p.tarRad - p.rad) * 0.1;
+        p.v *= viscosity;
+        p.rad += p.v;
+    }
+
+    ctx.beginPath();
+    let first = points[0];
+    let x0 = centerX + Math.cos(first.angle) * first.rad;
+    let y0 = centerY + Math.sin(first.angle) * first.rad;
+    let prevX = x0, prevY = y0;
+
+    for (let i = 1; i <= num; i++) {
+        let p = points[i % num];
+        let x = centerX + Math.cos(p.angle) * p.rad;
+        let y = centerY + Math.sin(p.angle) * p.rad;
+        let midX = (prevX + x) / 2;
+        let midY = (prevY + y) / 2;
+        if (i === 1) ctx.moveTo(midX, midY);
+        else ctx.quadraticCurveTo(prevX, prevY, midX, midY);
+        prevX = x; prevY = y;
+    }
+    ctx.quadraticCurveTo(prevX, prevY, (x0 + prevX) / 2, (y0 + prevY) / 2);
+    ctx.closePath();
+    ctx.fillStyle = '#0f0';
+    ctx.fill();
+    requestAnimationFrame(animate);
+}
+init();
+
+function back() {
+    location.href = 'relieve.html';
+}
+</script>
+</body>
+</html>

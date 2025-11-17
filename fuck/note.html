@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            notebook
+        </title>
+        <style>
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: lightgray;
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: gray;
+            }
+            ::-webkit-scrollbar-corner {
+                background: transparent;
+            }
+            #board{
+                position: absolute;
+                border: 1px rosybrown solid;
+                border-radius: 5px;
+                top: 10vh;
+                left: 5vw;
+                height: 50vh;
+                width: 90vw;
+                overflow: scroll;
+            }
+            #input{
+                position: absolute;
+                border: 1px fuchsia solid;
+                background-color: transparent;
+                border-radius: 5px;
+                top: 70vh;
+                left: 5vw;
+                width: 30vw;
+            }
+            #input:focus{
+                outline: none;
+            }
+            #send{
+                position: absolute;
+                border: 1px fuchsia solid;
+                outline: 1px solid;
+                outline-color: fuchsia;
+                outline-offset: 0px;
+                background-color: transparent;
+                border-radius: 5px;
+                top: 70vh;
+                left: 40vw;
+                width: 8vw;
+                text-align: center;
+                transition: all 300ms ease-in-out;
+            }
+            #send:hover{
+                outline: 1px solid;
+                outline-color: transparent;
+                outline-offset: 150px;
+            }
+            #delet{
+                position: absolute;
+                border: 1px violet solid;
+                border-radius: 10px;
+                box-shadow: 4px 4px 15px black;
+                top: 65vh;
+                left: 60vw;
+                height: 200px;
+                width: 200px;
+                transition: all 200ms;
+            }
+            #delet:hover{
+                box-shadow: 10px 10px 20px black;
+            }
+            #delet:active{
+                box-shadow: 1px 1px 10px black;
+            }
+            #delet span{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            .message{
+                position: relative;
+                border: 1px pink solid;
+                background-color: transparent;
+                border-radius: 5px;
+                max-width: 80vw;
+                width: auto;
+                word-wrap: break-word;
+                overflow: hidden;
+            }
+            #back{
+                position: fixed;
+                border: 1px rebeccapurple solid;
+                background-color: skyblue;
+                height: 50px;
+                width: 150px;
+                bottom: 10px;
+                right: 10px;
+                border-radius: 15px;
+                transition: all 200ms ease-in;
+            }
+            #back:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            #back span{
+                position: absolute;
+                font-size: larger;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+        </style>
+    </head>
+    <body bgcolor='antiquewhite'>
+        <div id='board'>
+            
+        </div>
+        <input id='input'>
+        <div id='send' onclick='javascript:send()'>
+            <span>
+                傳送
+            </span>
+        </div>
+        <div id='delet' onclick='javascript:delet()'>
+            <span>
+                把它們丟進垃圾桶
+            </span>
+        </div>
+        <div id='back' onclick='javascript:back()'>
+            <span>
+                回上頁
+            </span>
+        </div>
+        <script>
+            let memory=document.cookie.split('; ');
+            let id=0;
+            for(let a=0;a<memory[memory.length-1].length;a++){
+                if(memory[memory.length-1][a]=='='){
+                    id=parseInt(memory[memory.length-1].slice(0,a));
+                    break;
+                }
+            }
+            for(let a=0;a<memory.length;a++){
+                let message='';
+                for(let b=0;b<memory[a].length;b++){
+                    if(memory[a][b]=='='){
+                        let m=memory[a].slice(b+1,memory[a].length);
+                        if(m!=''){
+                            message=m;
+                        }
+                        break;
+                    }
+                }
+                document.getElementById('board').innerHTML+='<div class="message"><span>'+message+'</span></div>';
+            }
+            function send(){
+                let message=document.getElementById('input');
+                if(message.value.trim()!=''){
+                    id++;
+                    console.log(id);
+                    document.cookie=id.toString()+'='+message.value;
+                    document.getElementById('board').innerHTML+='<div class="message"><span>'+message.value+'</span></div>';
+                    message.value='';
+                }
+            }
+            function delet(){
+                document.getElementById('board').innerHTML='';
+                for(let a=0;a<=document.cookie.split('; ').length+10;a++){
+                    document.cookie=a.toString()+'=;max-age=0;path=/;';
+                }
+            }
+            document.addEventListener('keypress',e=>{
+                if(e.code=='Enter'){
+                    send();
+                }
+            })
+            function back(){
+                location.href='lobby.html';
+            }
+        </script>
+    </body>
+</html>

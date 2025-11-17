@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            relieve
+        </title>
+        <style>
+            body{
+                user-select:none;
+                -webkit-user-select:none;
+                -moz-user-select:none;
+            }
+            .button{
+                position: relative;
+                border: 1px red solid;
+                background-color: pink;
+                color: black;
+                height: 100px;
+                width: 100px;
+                border-radius: 10px;
+                transition: all 200ms ease-in;
+            }
+            .button:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            .button span{
+                position: absolute;
+                font-size: x-large;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            #back{
+                position: fixed;
+                border: 1px rebeccapurple solid;
+                background-color: skyblue;
+                height: 50px;
+                width: 150px;
+                bottom: 10px;
+                right: 10px;
+                border-radius: 15px;
+                transition: all 200ms ease-in;
+            }
+            #back:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            #back span{
+                position: absolute;
+                font-size: larger;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+        </style>
+    </head>
+    <body bgcolor='antiquewhite'>
+        <div id='glass' class='button' onclick='javascript:glass()'>
+            <span>
+                砸玻璃
+            </span>
+        </div>
+        <div id='bouncy' class='button' onclick='javascript:bouncy()'>
+            <span>
+                彈力球
+            </span>
+        </div>
+        <div id='stick' class='button' onclick='javascript:stick()'>
+            <span>
+                棍子吸附
+            </span>
+        </div>
+        <div id='back' onclick='javascript:back()'>
+            <span>
+                回上頁
+            </span>
+        </div>
+        <script>
+            function glass(){
+                location.href='glass.html';
+            }
+            function bouncy(){
+                location.href='bouncy.html';
+            }
+            function stick(){
+                location.href='stick.html';
+            }
+            function back(){
+                location.href='lobby.html';
+            }
+        </script>
+    </body>
+</html>

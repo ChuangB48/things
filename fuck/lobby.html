@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            treater
+        </title>
+        <style>
+            body{
+                user-select:none;
+                -webkit-user-select:none;
+                -moz-user-select:none;
+            }
+            .button{
+                position: relative;
+                border: 1px red solid;
+                background-color: pink;
+                color: black;
+                height: 100px;
+                width: 100px;
+                border-radius: 10px;
+                transition: all 200ms ease-in;
+            }
+            .button:hover{
+                background-color: aqua;
+                color: red;
+                box-shadow:inset 10px 10px 10px black;
+            }
+            .button span{
+                position: absolute;
+                font-size: x-large;
+                font-family: DFKai-SB, STKaiti, PMingLiU, sans-serif;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+        </style>
+    </head>
+    <body bgcolor='antiquewhite'>
+        <div id='relieve' class='button' onclick='javascript:relieve()'>
+            <span>
+                紓壓小物
+            </span>
+        </div>
+        <div id='quotes' class='button' onclick='javascript:quotes()'>
+            <span>
+                經典語錄
+            </span>
+        </div>
+        <div id='note' class='button' onclick='javascript:note()'>
+            <span>
+                自我對話紀錄本
+            </span>
+        </div>
+        <div id='breath' class='button' onclick='javascript:breath()'>
+            <span>
+                呼吸練習
+            </span>
+        </div>
+        <script>
+            function relieve(){
+                location.href='relieve.html';
+            }
+            function quotes(){
+                location.href='quotes.html';
+            }
+            function note(){
+                location.href='note.html';
+            }
+            function breath(){
+                location.href='deepbreath.html';
+            }
+        </script>
+    </body>
+</html>
